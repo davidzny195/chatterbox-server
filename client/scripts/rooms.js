@@ -27,7 +27,6 @@ var Rooms = {
       .pluck('roomname')
       .uniq()
       .each(room => Rooms._data.add(room));
-
     if (Rooms.selected === null) {
       // make the first room the default selected room
       Rooms.selected = Rooms._data.values().next().value;
@@ -38,5 +37,5 @@ var Rooms = {
       callback(Rooms.items());
     }
   }
-  
+
 };
