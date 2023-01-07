@@ -65,5 +65,25 @@ describe('server', function() {
     });
   });
 
+  // it('Should respond "No message sent"', function(done) {
+  //   request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+  //     expect(response.responseJSON).to.equal("No message sent");
+  //     done();
+  //   });
+  // });
+  it('should respond with status 404 for empty text', function(done) {
+    var requestParams = {method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Jono',
+        text: ''}
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(404);
+      done();
+    });
+  });
+
 
 });

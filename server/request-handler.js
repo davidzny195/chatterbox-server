@@ -41,24 +41,33 @@ var requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'application/json';
 
   if (request.url.includes('/classes/messages')) {
     var statusCode = 200;
+
     if (request.method === 'GET') {
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(storage));
     } else if (request.method === 'POST') {
-      var statusCode = 201;
+      statusCode = 201;
       var body = '';
       request.on('data', (data) => {
         body += data;
       }).on('end', () => {
-        storage.push(JSON.parse(body));
+        let parsed = JSON.parse(body);
+        if (!parsed.text) {
+          response.writeHead(404, headers);
+          return response.end(JSON.stringify('No message sent'));
+        }
+
+        storage.push(parsed);
         response.writeHead(statusCode, headers);
-        console.log(JSON.stringify(body), 'stringified');
         response.end(JSON.stringify(body));
       });
+    } else if (request.method === 'OPTIONS') {
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify('OPTIONS'));
     }
   } else {
     var statusCode = 404;
